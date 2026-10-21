@@ -6,7 +6,7 @@ build-backend = "setuptools.build_meta"
 name = "search-examples"
 version = "0.1.0"
 requires-python = ">=3.11"
-dependencies = []
+dependencies = ["search_lib @ git+https://github.com/GustavoFelipeM/search_lib@8f119b004890be5109d3fae975670d9fbd0c49a7"]
 
 [project.optional-dependencies]
 dev = ["pytest", "mypy"]
