@@ -72,3 +72,41 @@ def test_bfs_solves_short_scrambles(
 
     assert result.solution_node is not None
     assert result.solution_node.cost <= moves
+    replayed = state
+    for step in result.solution_node.get_path():
+        transition = step.apply(replayed)
+        assert transition is not None
+        replayed = transition[0]
+    assert problem.is_goal(replayed)
+
+
+@pytest.mark.parametrize(("rows", "cols", "moves"), [(3, 3, 5), (4, 3, 4)])
+def test_bfs_finds_optimal_seeded_scramble(
+    rows: int, cols: int, moves: int
+) -> None:
+    problem = SlidingPuzzle(rows, cols)
+    state = problem.random_state(moves, seed=41 + moves)
+    result = BFS(problem).search(state)
+
+    assert result.solution_node is not None
+    assert result.solution_node.cost == moves
+    assert result.solution_node.cost <= moves
+    assert result.solution_node.depth == moves
+
+    replayed = state
+    for step in result.solution_node.get_path():
+        transition = step.apply(replayed)
+        assert transition is not None
+        replayed = transition[0]
+    assert problem.is_goal(replayed)
+
+
+def test_bfs_returns_zero_cost_for_solved_puzzle() -> None:
+    problem = SlidingPuzzle(3, 3)
+    result = BFS(problem).search(problem.initial_state)
+
+    assert result.solution_node is not None
+    assert result.solution_node.cost == 0.0
+    assert result.solution_node.depth == 0
+    assert result.solution_node.get_path() == []
+    assert problem.is_goal(result.solution_node.state)

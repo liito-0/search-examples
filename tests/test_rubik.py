@@ -71,6 +71,34 @@ def test_bfs_solves_short_scrambles(action_set: str, moves: int) -> None:
 
     assert result.solution_node is not None
     assert result.solution_node.cost <= moves
+    replayed = state
+    for step in result.solution_node.get_path():
+        transition = step.apply(replayed)
+        assert transition is not None
+        replayed = transition[0]
+    assert problem.is_goal(replayed)
+
+
+@pytest.mark.parametrize("size", [2, 3])
+@pytest.mark.parametrize("action_set", ["quarter", "full"])
+@pytest.mark.parametrize("moves", [1, 2, 3])
+def test_bfs_finds_expected_solution_for_seeded_scrambles(
+    size: int, action_set: str, moves: int
+) -> None:
+    problem = RubikCube(size, action_set)
+    state = problem.random_state(moves, seed=31 + moves)
+    result = BFS(problem).search(state)
+
+    assert result.solution_node is not None
+    assert result.solution_node.cost == moves
+    assert result.solution_node.depth == moves
+
+    replayed = state
+    for step in result.solution_node.get_path():
+        transition = step.apply(replayed)
+        assert transition is not None
+        replayed = transition[0]
+    assert problem.is_goal(replayed)
 
 
 def test_random_walk_avoids_inverse_moves() -> None:
