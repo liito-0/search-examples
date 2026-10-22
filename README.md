@@ -93,7 +93,21 @@ Move todos os discos de um pino para outro, um por vez, sem nunca colocar um dis
 - `n_pegs`: quantidade de pinos, no mínimo `3` (padrão `3`)
 - `initial_peg`: pino onde todos os discos começam (padrão `0`)
 - `goal_peg`: pino onde todos devem terminar (padrão: o último pino)
--
+- `heuristic`: `"disks_off_goal"` (padrão; quantidade de discos fora do pino objetivo, admissível e consistente) ou `"zero"`
+
+O estado é `HanoiState(pegs)`: cada pino é uma tupla do fundo para o topo, com `1` sendo o menor disco. Por exemplo, `((3, 2, 1), (), ())` tem 3 discos no primeiro pino.
+
+```python
+from search_lib import BFS
+from examples.torre_hanoi.problem import TowerOfHanoi
+
+problem = TowerOfHanoi(n_disks=3, n_pegs=3)
+result = BFS(problem).search(problem.initial_state)
+print(result.solution_node.cost)  # 7 (= 2**3 - 1)
+print(result.solution_node.get_path())  # [MOVER(0, 2), MOVER(0, 1), ...]
+```
+
+Com 3 pinos a solução ótima tem `2**n_disks - 1` movimentos; com um pino extra ela encurta (3 discos e 4 pinos: 5 movimentos). Como as buscas em árvore repetem estados, o `BFS` só é viável para poucos discos (3 em 3 pinos já gera milhares de nós; 4 em 3 pinos geraria milhões).
 
 
 
