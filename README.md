@@ -63,3 +63,37 @@ problem = GridRobot(width=3, height=3)
 start = problem.random_state(4, seed=1)
 print(BFS(problem).search(start).solution_node.cost)
 ```
+
+### Mapa da Romênia
+
+Caminhos entre cidades do mapa de estradas do livro (Russell & Norvig). Cada ação é `IR_PARA(cidade)`, com custo igual à distância em km.
+
+- `goal`: cidade objetivo (padrão: `"Bucharest"`)
+- `initial_city`: cidade de partida (padrão: `"Arad"`)
+- `heuristic`: `"straight_line"` (distância em linha reta até Bucharest; padrão quando o objetivo é Bucharest) ou `"zero"`
+- `roads`: lista de `(cidade_a, cidade_b, distância)` para usar um mapa personalizado (então só vale `"zero"`)
+
+```python
+from search_lib import BFS, DLS
+from examples.mapa_romenia.problem import Romania
+
+problem = Romania()
+start = problem.initial_state  # Arad
+print(BFS(problem).search(start).solution_node.cost)  # 450 (menos estradas, não o mais barato)
+print(DLS(problem, 4).search(start).solution_node.cost)
+```
+
+Atenção: as buscas em árvore não verificam estados repetidos e as estradas são bidirecionais, então `DFS` sem limite não termina neste problema e qualquer busca sem solução também não. Use `DLS` ou garanta que existe solução.
+
+### Torre de Hanói
+
+Move todos os discos de um pino para outro, um por vez, sem nunca colocar um disco maior sobre um menor. Cada ação é `MOVER(origem, destino)`, com custo 1, e move o disco do topo do pino de origem. Os pinos são numerados a partir de `0`.
+
+- `n_disks`: quantidade de discos (padrão `3`)
+- `n_pegs`: quantidade de pinos, no mínimo `3` (padrão `3`)
+- `initial_peg`: pino onde todos os discos começam (padrão `0`)
+- `goal_peg`: pino onde todos devem terminar (padrão: o último pino)
+-
+
+
+
